@@ -19,6 +19,10 @@ tqdm>=4.66.0
 # Web Interface
 gradio>=4.0.0
 
+# Distributed Mode (optional)
+flask>=3.0.0
+redis>=5.0.0  # Optional: for production message broker
+
 # Optional: Enhanced features
 # ebooklib>=0.18  # For EPUB generation
 # xformers>=0.0.22  # For faster image generation
