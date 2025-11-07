@@ -32,6 +32,7 @@ class AuthorAgent(BaseAgent):
         self.target_age = config.get('target_age', '8-12')
         self.model = None
         self.tokenizer = None
+        self.generator = None  # Initialize generator attribute
         
         # Story state
         self.current_story = {
@@ -47,32 +48,51 @@ class AuthorAgent(BaseAgent):
     
     def _load_model(self):
         """Load the language model for story generation."""
-        self.update_status("loading", "Loading language model...")
-        
-        model_name = self.config.get('model_name', 'mistralai/Mistral-7B-Instruct-v0.2')
-        device = self.config.get('device', 'auto')
-        load_in_8bit = self.config.get('load_in_8bit', False)
-        
-        self.logger.info(f"Loading model: {model_name}")
-        
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
-        
-        load_kwargs = {'device_map': device}
-        if load_in_8bit:
-            load_kwargs['load_in_8bit'] = True
-        
-        self.model = AutoModelForCausalLM.from_pretrained(
-            model_name,
-            **load_kwargs
-        )
-        
-        self.generator = pipeline(
-            'text-generation',
-            model=self.model,
-            tokenizer=self.tokenizer
-        )
-        
-        self.update_status("ready", "Model loaded successfully")
+        try:
+            self.update_status("loading", "Loading language model...")
+            
+            model_name = self.config.get('model_name', 'mistralai/Mistral-7B-Instruct-v0.2')
+            device = self.config.get('device', 'auto')
+            load_in_8bit = self.config.get('load_in_8bit', False)
+            
+            self.logger.info(f"Loading model: {model_name}")
+            self.logger.info(f"Device: {device}, 8-bit: {load_in_8bit}")
+            
+            # Load tokenizer
+            self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+            if self.tokenizer.pad_token is None:
+                self.tokenizer.pad_token = self.tokenizer.eos_token
+            
+            # Load model
+            load_kwargs = {'device_map': device}
+            if load_in_8bit and torch.cuda.is_available():
+                load_kwargs['load_in_8bit'] = True
+            elif load_in_8bit and not torch.cuda.is_available():
+                self.logger.warning("8-bit loading requested but CUDA not available. Loading in full precision.")
+            
+            self.model = AutoModelForCausalLM.from_pretrained(
+                model_name,
+                **load_kwargs
+            )
+            
+            # Create text generation pipeline
+            self.generator = pipeline(
+                'text-generation',
+                model=self.model,
+                tokenizer=self.tokenizer,
+                max_length=1024,
+                do_sample=True,
+                temperature=self.config.get('temperature', 0.7),
+                top_p=self.config.get('top_p', 0.9)
+            )
+            
+            self.logger.info("✅ Model loaded successfully")
+            self.update_status("ready", "Model loaded successfully")
+            
+        except Exception as e:
+            self.logger.error(f"❌ Failed to load model: {str(e)}")
+            self.generator = None
+            raise RuntimeError(f"Failed to load Author model: {str(e)}")
     
     def process_message(self, message: Message) -> Optional[Message]:
         """Process messages from other agents."""

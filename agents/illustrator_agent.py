@@ -47,28 +47,36 @@ class IllustratorAgent(BaseAgent):
     
     def _load_model(self):
         """Load the image generation model."""
-        self.update_status("loading", "Loading image generation model...")
-        
-        model_name = self.config.get('model_name', 'runwayml/stable-diffusion-v1-5')
-        device = self.config.get('device', 'cuda' if torch.cuda.is_available() else 'cpu')
-        
-        self.logger.info(f"Loading model: {model_name}")
-        
-        self.pipeline = StableDiffusionPipeline.from_pretrained(
-            model_name,
-            torch_dtype=torch.float16 if device == 'cuda' else torch.float32,
-            safety_checker=None
-        )
-        
-        if device == 'cuda':
-            self.pipeline = self.pipeline.to(device)
-        
-        # Optimize for speed
-        self.pipeline.scheduler = DPMSolverMultistepScheduler.from_config(
-            self.pipeline.scheduler.config
-        )
-        
-        self.update_status("ready", "Model loaded successfully")
+        try:
+            self.update_status("loading", "Loading image generation model...")
+            
+            model_name = self.config.get('model_name', 'runwayml/stable-diffusion-v1-5')
+            device = self.config.get('device', 'cuda' if torch.cuda.is_available() else 'cpu')
+            
+            self.logger.info(f"Loading model: {model_name}")
+            self.logger.info(f"Device: {device}")
+            
+            self.pipeline = StableDiffusionPipeline.from_pretrained(
+                model_name,
+                torch_dtype=torch.float16 if device == 'cuda' else torch.float32,
+                safety_checker=None
+            )
+            
+            if device == 'cuda':
+                self.pipeline = self.pipeline.to(device)
+            
+            # Optimize for speed
+            self.pipeline.scheduler = DPMSolverMultistepScheduler.from_config(
+                self.pipeline.scheduler.config
+            )
+            
+            self.logger.info("✅ Image generation model loaded successfully")
+            self.update_status("ready", "Model loaded successfully")
+            
+        except Exception as e:
+            self.logger.error(f"❌ Failed to load model: {str(e)}")
+            self.pipeline = None
+            raise RuntimeError(f"Failed to load Illustrator model: {str(e)}")
     
     def process_message(self, message: Message) -> Optional[Message]:
         """Process messages from other agents."""
