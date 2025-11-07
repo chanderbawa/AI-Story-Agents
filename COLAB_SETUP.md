@@ -8,7 +8,7 @@ This guide will help you run the AI Story Agents web interface on Google Colab w
 
 ```python
 # Clone the repository (or upload your files)
-!git clone <your-repo-url> AI-Story-Agents
+!git clone https://github.com/chanderbawa/AI-Story-Agents.git
 # OR if you have files in Google Drive:
 # from google.colab import drive
 # drive.mount('/content/drive')
@@ -65,7 +65,7 @@ print("=" * 60)
 
 # 2. Clone Repository
 print("\n📥 Cloning repository...")
-!git clone https://github.com/YOUR_USERNAME/AI-Story-Agents.git
+!git clone https://github.com/chanderbawa/AI-Story-Agents.git
 %cd AI-Story-Agents
 
 # 3. Install Dependencies
