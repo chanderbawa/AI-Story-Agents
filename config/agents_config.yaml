@@ -1,0 +1,74 @@
+# AI Story Agents Configuration
+
+# Author Agent Settings
+author:
+  model_name: "mistralai/Mistral-7B-Instruct-v0.2"
+  device: "auto"  # auto, cuda, cpu
+  load_in_8bit: true  # Reduce memory usage
+  temperature: 0.7
+  top_p: 0.9
+  writing_style: "engaging"  # engaging, descriptive, humorous, dramatic
+  target_age: "8-12"
+  load_model: true  # Set to false for testing without loading models
+
+# Illustrator Agent Settings
+illustrator:
+  model_name: "runwayml/stable-diffusion-v1-5"  # or stabilityai/stable-diffusion-xl-base-1.0
+  device: "auto"
+  art_style: "children_book"  # children_book, cartoon, watercolor, line_art
+  num_inference_steps: 50
+  guidance_scale: 7.5
+  width: 768
+  height: 1024
+  negative_prompt: "blurry, distorted, low quality, text, watermark, multiple limbs, deformed"
+  load_model: true
+
+# Publisher Agent Settings
+publisher:
+  formats:
+    - pdf
+    - html
+    # - epub  # Requires ebooklib
+  
+  layout:
+    page_width: 6.0  # inches
+    page_height: 9.0  # inches
+    margin_top: 0.75
+    margin_bottom: 0.75
+    margin_left: 0.5
+    margin_right: 0.5
+  
+  typography:
+    title_font: "Helvetica-Bold"
+    title_size: 24
+    chapter_font: "Helvetica-Bold"
+    chapter_size: 18
+    body_font: "Times-Roman"
+    body_size: 12
+    line_spacing: 1.5
+
+# Output Settings
+output_dir: "output/publications"
+
+# Story Defaults
+story_defaults:
+  target_age: "8-12"
+  themes:
+    - friendship
+    - courage
+  length: "short"  # short (3 chapters), medium (5), long (8)
+  art_style: "children_book"
+
+# Performance Settings
+performance:
+  batch_size: 1
+  max_workers: 2  # For parallel processing
+  cache_models: true
+  save_intermediate: true  # Save chapters and images as they're created
+
+# Quality Control
+quality:
+  min_chapter_words: 500
+  max_chapter_words: 2000
+  images_per_chapter: 2
+  review_enabled: false  # Enable AI review of content
