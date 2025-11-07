@@ -1,0 +1,74 @@
+# AI Story Agents Configuration - CPU Optimized
+# Use this config for running on CPU without GPU
+
+# Author Agent Settings
+author:
+  model_name: "TinyLlama/TinyLlama-1.1B-Chat-v1.0"  # Smaller, faster model for CPU
+  device: "cpu"  # Force CPU usage
+  load_in_8bit: false  # 8-bit not supported on CPU
+  temperature: 0.7
+  top_p: 0.9
+  writing_style: "engaging"  # engaging, descriptive, humorous, dramatic
+  target_age: "8-12"
+  load_model: true
+
+# Illustrator Agent Settings
+illustrator:
+  model_name: "runwayml/stable-diffusion-v1-5"  # SD 1.5 is lighter than SDXL
+  device: "cpu"  # Force CPU usage
+  art_style: "children_book"  # children_book, cartoon, watercolor, line_art
+  num_inference_steps: 25  # Reduced for faster CPU generation
+  guidance_scale: 7.5
+  width: 512  # Smaller images for faster generation
+  height: 512
+  negative_prompt: "blurry, distorted, low quality, text, watermark, multiple limbs, deformed"
+  load_model: true
+
+# Publisher Agent Settings
+publisher:
+  formats:
+    - pdf
+    - html
+  
+  layout:
+    page_width: 6.0  # inches
+    page_height: 9.0  # inches
+    margin_top: 0.75
+    margin_bottom: 0.75
+    margin_left: 0.5
+    margin_right: 0.5
+  
+  typography:
+    title_font: "Helvetica-Bold"
+    title_size: 24
+    chapter_font: "Helvetica-Bold"
+    chapter_size: 18
+    body_font: "Times-Roman"
+    body_size: 12
+    line_spacing: 1.5
+
+# Output Settings
+output_dir: "output/publications"
+
+# Story Defaults
+story_defaults:
+  target_age: "8-12"
+  themes:
+    - friendship
+    - courage
+  length: "short"  # short (3 chapters), medium (5), long (8)
+  art_style: "children_book"
+
+# Performance Settings - Optimized for CPU
+performance:
+  batch_size: 1
+  max_workers: 1  # Single worker for CPU
+  cache_models: true
+  save_intermediate: true  # Save chapters and images as they're created
+
+# Quality Control
+quality:
+  min_chapter_words: 500
+  max_chapter_words: 2000
+  images_per_chapter: 2
+  review_enabled: false

@@ -40,17 +40,23 @@ A multi-agent AI system for collaborative story creation, featuring specialized 
 
 Launch the user-friendly web interface:
 
+**With GPU:**
 ```bash
-# Install dependencies
 pip install -r requirements.txt
-
-# Launch web interface
 python app.py
+```
+
+**Without GPU (CPU only):**
+```bash
+pip install -r requirements.txt
+python app_cpu.py  # Optimized for CPU
 ```
 
 Then open your browser to `http://localhost:7860` and start creating stories!
 
-**For Google Colab:** See [COLAB_SETUP.md](COLAB_SETUP.md) for detailed instructions.
+**Guides:**
+- **CPU Mode:** See [CPU_SETUP.md](CPU_SETUP.md) or [QUICK_START_CPU.md](QUICK_START_CPU.md)
+- **Google Colab (Free GPU):** See [COLAB_SETUP.md](COLAB_SETUP.md)
 
 ### 💻 Command Line Interface
 
